@@ -28,21 +28,27 @@ fulldata <- popvotestate %>%
 
 ```{r Democratic Vote Share ~ Electors, message=FALSE}
 
+# Piped in data and dropped NA values
 electordata <- fulldata %>%
   drop_na()
-
+# Created ggplot
 electoranim <- ggplot(electordata, aes(x = electors, y = D_pv2p)) +
+  # Decreased scatterplot point size for cleaner look
   geom_point(size = 0.5) +
+  # Created regression line and reduced line thickness
   geom_smooth(method = "lm", se = FALSE, size = 0.5) +
+  # Set titles
   labs(x = "Number of State's Electors", y = "Percentage of State Vote Won by Democrat", title = "Democrat State Vote Share Explained by Number of Electors", subtitle = "Year: {current_frame}") +
+  # Set theme
   theme_bw() +
+  # Set font sizes
   theme(plot.title = element_text(size = 7), plot.subtitle = element_text(size = 6), axis.title = element_text(size = 6), axis.text = element_text(size = 6)) +
+  # Set transition style
   transition_manual(year)
-
+# Animated graphic and manually set height, width, and resolution
 animate(electoranim, duration = 15, fps = 20, width = 3, height = 2, units="in", res= 175, renderer = gifski_renderer())
-
+# Saved gif
 anim_save("electoranimation.gif")
-
 
 ```
 
