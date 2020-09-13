@@ -1,0 +1,49 @@
+---
+title: "Introduction"
+author: "Erin Guetzloe"
+date: "9/12/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+# read in libraries
+library(tidyverse)
+library(usmap)
+library(ggthemes)
+library(plotly)
+library(gapminder)
+library(gganimate)
+library(transformr)
+library(gifski)
+# read in both the csvs and assigned variable names
+popvote <- read.csv("data/popvote_1948-2016.csv")
+popvotestate <- read.csv("data/popvote_bystate_1948-2016.csv")
+electors <- read.csv("data/ec_1952-2020.csv")
+# joined electors dataset with popular vote by state dataset
+fulldata <- popvotestate %>%
+  left_join(electors, by = c("year", "state"))
+```
+
+
+```{r Democratic Vote Share ~ Electors, message=FALSE}
+
+electordata <- fulldata %>%
+  drop_na()
+
+electoranim <- ggplot(electordata, aes(x = electors, y = D_pv2p)) +
+  geom_point(size = 0.5) +
+  geom_smooth(method = "lm", se = FALSE, size = 0.5) +
+  labs(x = "Number of State's Electors", y = "Percentage of State Vote Won by Democrat", title = "Democrat State Vote Share Explained by Number of Electors", subtitle = "Year: {current_frame}") +
+  theme_bw() +
+  theme(plot.title = element_text(size = 7), plot.subtitle = element_text(size = 6), axis.title = element_text(size = 6), axis.text = element_text(size = 6)) +
+  transition_manual(year)
+
+animate(electoranim, duration = 15, fps = 20, width = 3, height = 2, units="in", res= 175, renderer = gifski_renderer())
+
+anim_save("electoranimation.gif")
+
+
+```
+
+
