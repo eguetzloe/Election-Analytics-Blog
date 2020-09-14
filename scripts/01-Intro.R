@@ -26,28 +26,43 @@ fulldata <- popvotestate %>%
 populationdata <- fulldata %>%
   left_join(populationstate, by = c("year", "state"))
 
+# Piped in data
 electors2016 <- populationdata %>%
+  # Filtered for 2016
   filter(year == 2016) %>%
+  # Filtered for desired states
   filter(state %in% c("California", "Wyoming")) %>%
+  # Created ggplot with different colors for states
   ggplot(aes(x = state, y = electors, fill = state)) +
+  # Set red and blue colors to match themes
   scale_fill_manual(values=c("red", "blue")) +
+  # Created bar plot and thinned bars to create cleaner appearance
   geom_bar(stat = "identity", width = 0.3) +
   labs(title= "Number of Electors Per State in 2016", y = "Number of Electors", x = " ", fill = "State") +
+  # Flipped graph
   coord_flip() +
+  # Set theme
   theme_bw()
-
+# Saved image
 ggsave("figures/electors2016.png")
-
+# Piped in data
 population2016 <- populationdata %>%
+  # Filtered for year 2016
   filter(year == 2016) %>%
+  # Filtered for desired states
   filter(state %in% c("California", "Wyoming")) %>%
+  # Created ggplot
   ggplot(aes(x = state, y = population, fill = state)) + 
+  # Set red and blue colors to match themes
   scale_fill_manual(values=c("red", "blue")) +
+  # Created bar plot and thinned bars to create cleaner appearance
   geom_bar(stat = "identity", width = 0.3) +
   labs(title= "Population Per State in 2016", y = "Population (in millions)", x = " ", fill = "State") +
+  # Flipped graph
   coord_flip() +
+  # Set theme
   theme_bw()
-
+# Saved image
 ggsave("figures/population2016.png")
 
 # Piped in data and dropped NA values
@@ -72,11 +87,15 @@ animate(electoranim, duration = 15, fps = 20, width = 3, height = 2, units="in",
 # Saved gif
 anim_save("figures/electoranimation.gif")
 
+# This graphic was largely inspired by Sun Young's graphic from lab. Thanks for
+# the excellent graphic!
 pv_margins_map <- popvotestate %>%
   mutate(win_margin = (D_pv2p-R_pv2p)) %>%
+  # Set desired years
   filter(year %in% c(1964, 1968, 1972, 1988, 1992, 2000))
 
 map <- plot_usmap(data = pv_margins_map, regions = "states", values = "win_margin") +
+  # Set slightly different colors
   scale_fill_gradient2(
     high = "dodgerblue2", 
     mid = "white",
@@ -85,8 +104,9 @@ map <- plot_usmap(data = pv_margins_map, regions = "states", values = "win_margi
     limits = c(-50,50),
     name = "win margin"
   ) +
-  labs(title = "Impact of the Southern Strategy", caption= "Some states are gray because of N/A values. In these cases, certain frontrunners were not included on some ballots and thus data is incomplete.", fill = "Win Margin by Percent") +
+  labs(title = "Impact of the Southern Strategy", subtitle= "Some states are gray because of N/A values. In these cases, certain frontrunners \nwere not included on some ballots and thus data is incomplete.", fill = "Win Margin by Percent") +
+  # Faceted by year
   facet_wrap(~year) +
   theme_void()
-
+# Saved image
 ggsave("figures/map.png")
