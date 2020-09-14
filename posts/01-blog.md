@@ -10,7 +10,7 @@ One commonly cited example is the comparison of Wyoming and California. Accordin
 
 In light of this difference, it is interesting to consider how electors are apportioned in the first place. Each state receives a number of electors equal to its sum of Senators and Representatives. Thus, the number of a state’s electors can be a general indicator of the state’s population. This observation raises an interesting question: is there any kind of relationship between population and number of electors per state? More specifically, do the most populous states tend to prefer one party, and has this relationship changed significantly over time? I explore this potential correlation in the animation below, which illustrates what percent of a state’s vote the Democratic presidential candidate received in elections going back to 1948. 
 
-![](../figures/elector.animation.gif)
+![](../figures/electoranimation.gif)
 
 As seen in the graphic, it appears that since 1948 there has been a positive relationship between number of electors and Democratic vote share by state; however, this relationship began very weakly and slowly grew more pronounced. In the earliest years depicted in the animation, the regression line is nearly flat, indicating almost no correlation between Democratic vote percent and number of electors. Later, though, the line turns more clearly upwards, implying that in recent years more populous states have begun voting more strongly Democratic than in the past. 
 
