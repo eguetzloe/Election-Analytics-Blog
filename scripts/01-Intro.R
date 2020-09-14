@@ -1,199 +1,92 @@
-#### Introduction ####
-#### Gov 1347: Election Analysis (2020)
-#### TFs: Soubhik Barari, Sun Young Park
-
-####----------------------------------------------------------#
-#### Pre-amble ####
-####----------------------------------------------------------#
-
-## install via `install.packages("name")`
+# read in libraries
 library(tidyverse)
-library(ggplot2)
 library(usmap)
+library(ggthemes)
+library(plotly)
+library(gganimate)
+library(transformr)
+library(gifski)
+# read in both the csvs and assigned variable names
+popvote <- read_csv("data/popvote_1948-2016.csv")
+popvotestate <- read_csv("data/popvote_bystate_1948-2016.csv")
+# Thanks to Soubhik for finding this dataset
+electors <- read_csv("data/ec_1952-2020.csv")
+# Found this dataset on Kaggle which lists the populations of each state going
+# back to the early 20th century:
+# https://www.kaggle.com/hassenmorad/historical-state-populations-19002017
+populationstate <- read_csv("data/datasets_42082_70699_state_pops.csv") %>%
+  mutate (year = Year) %>% 
+  filter(year %in% c(1952, 1956, 1960, 1964, 1968, 1972, 1976, 1980, 1984, 1988, 1992, 1996, 2000, 2004, 2008, 2012, 2016)) %>%
+  pivot_longer(!year, names_to = "state", values_to = "population") %>%
+  filter(state != "Year")
+# joined electors dataset with popular vote by state dataset
+fulldata <- popvotestate %>%
+  left_join(electors, by = c("year", "state"))
+# joined electors dataset with population
+populationdata <- fulldata %>%
+  left_join(populationstate, by = c("year", "state"))
 
-## set working directory here
-setwd("~/Users/guetz/Desktop/Election-Analytis-Blog")
+electors2016 <- populationdata %>%
+  filter(year == 2016) %>%
+  filter(state %in% c("California", "Wyoming")) %>%
+  ggplot(aes(x = state, y = electors, fill = state)) +
+  scale_fill_manual(values=c("red", "blue")) +
+  geom_bar(stat = "identity", width = 0.3) +
+  labs(title= "Number of Electors Per State in 2016", y = "Number of Electors", x = " ", fill = "State") +
+  coord_flip() +
+  theme_bw()
 
-####----------------------------------------------------------#
-#### Read and clean pres pop vote ####
-####----------------------------------------------------------#
+ggsave("figures/electors2016.png")
 
-## read
-popvote_df <- read_csv("popvote_1948-2016.csv")
+population2016 <- populationdata %>%
+  filter(year == 2016) %>%
+  filter(state %in% c("California", "Wyoming")) %>%
+  ggplot(aes(x = state, y = population, fill = state)) + 
+  scale_fill_manual(values=c("red", "blue")) +
+  geom_bar(stat = "identity", width = 0.3) +
+  labs(title= "Population Per State in 2016", y = "Population (in millions)", x = " ", fill = "State") +
+  coord_flip() +
+  theme_bw()
 
-## subset
-popvote_df %>% 
-  filter(year == 2016) %>% 
-  select(party, candidate, pv2p)
+ggsave("figures/population2016.png")
 
-## format
-(popvote_wide_df <- popvote_df %>%
-  select(year, party, pv2p) %>%
-  spread(party, pv2p))
+# Piped in data and dropped NA values
+electordata <- fulldata %>%
+  drop_na()
+# Created ggplot
+electoranim <- ggplot(electordata, aes(x = electors, y = D_pv2p)) +
+  # Decreased scatterplot point size for cleaner look
+  geom_point(size = 0.5) +
+  # Created regression line and reduced line thickness
+  geom_smooth(method = "lm", se = FALSE, size = 0.5) +
+  # Set titles
+  labs(x = "Number of State's Electors", y = "Percentage of State Vote Won by Democrat", title = "Democrat State Vote Share Explained by Number of Electors", subtitle = "Year: {current_frame}") +
+  # Set theme
+  theme_bw() +
+  # Set font sizes
+  theme(plot.title = element_text(size = 7), plot.subtitle = element_text(size = 6), axis.title = element_text(size = 6), axis.text = element_text(size = 6)) +
+  # Set transition style
+  transition_manual(year)
+# Animated graphic and manually set height, width, and resolution
+animate(electoranim, duration = 15, fps = 20, width = 3, height = 2, units="in", res= 175, renderer = gifski_renderer())
+# Saved gif
+anim_save("figures/electoranimation.gif")
 
-## modify
-(popvote_wide_df <- popvote_wide_df %>% 
-  mutate(winner = case_when(democrat > republican ~ "D",
-                            TRUE ~ "R")))
+pv_margins_map <- popvotestate %>%
+  mutate(win_margin = (D_pv2p-R_pv2p)) %>%
+  filter(year %in% c(1964, 1968, 1972, 1988, 1992, 2000))
 
-## summarise
-popvote_wide_df %>% 
-  group_by(winner) %>%
-  summarise(races = n())
-
-####----------------------------------------------------------#
-#### Visualize trends in national pres pop vote ####
-####----------------------------------------------------------#
-
-## example: histogram
-ggplot(popvote_df, aes(x = pv2p)) + 
-    geom_histogram()
-
-## example: barplot (+ custom colors)
-ggplot(popvote_df, aes(x = year, y = pv2p, fill = party)) +
-    geom_bar(stat = "identity") +
-    scale_fill_manual(values = c("blue", "red")) 
-
-## example: lineplot (+ custom colors + nicer theme)
-ggplot(popvote_df, aes(x = year, y = pv2p, colour = party)) +
-    geom_line() +
-    scale_color_manual(values = c("blue", "red")) + 
-    theme_bw()
-
-## BAD plot: 
-## dark background, "too much ink", no legend, small font, 
-ggplot(popvote_df, aes(x = year, y = pv2p, colour = party)) +
-    geom_line(stat = "identity") + 
-    theme_dark() +
-    theme(legend.position = "none", axis.title = element_text(size = 5))
-
-## GOOD plot:
-## high contrast, "minimal ink", legend, detailed x-ticks, larger font
-ggplot(popvote_df, aes(x = year, y = pv2p, colour = party)) +
-    geom_line(stat = "identity") + 
-    scale_x_continuous(breaks = seq(1948, 2016, 4)) +
-    theme_minimal() +
-    theme(axis.text.x = element_text(angle = 45))
-
-## EXCELLENT plot:
-## "pretty" customized theme
-my_pretty_theme <- theme_bw() + 
-    theme(panel.border = element_blank(),
-          plot.title   = element_text(size = 15, hjust = 0.5), 
-          axis.text.x  = element_text(angle = 45, hjust = 1),
-          axis.text    = element_text(size = 12),
-          strip.text   = element_text(size = 18),
-          axis.line    = element_line(colour = "black"),
-          legend.position = "top",
-          legend.text = element_text(size = 12))
-
-ggplot(popvote_df, aes(x = year, y = pv2p, colour = party)) +
-    geom_line(stat = "identity") +
-    scale_color_manual(values = c("blue", "red"), name = "") +
-    xlab("") + ## no need to label an obvious axis
-    ylab("popular vote %") +
-    ggtitle("Presidential Vote Share (1948-2016)") + 
-    scale_x_continuous(breaks = seq(from = 1948, to = 2016, by = 4)) +
-    my_pretty_theme
-
-## saves last displayed plot
-ggsave("PV_national_historical.png", height = 4, width = 8)
-
-####----------------------------------------------------------#
-#### State-by-state map of pres pop votes ####
-####----------------------------------------------------------#
-
-## read in state pop vote
-pvstate_df <- read_csv("popvote_bystate_1948-2016.csv")
-pvstate_df$full <- pvstate_df$state
-
-## shapefile of states from `usmap` library
-## note: `usmap` merges this internally, but other packages may not!
-states_map <- usmap::us_map()
-unique(states_map$abbr)
-
-## map: GOP pv2p (`plot_usmap` is wrapper function of `ggplot`)
-plot_usmap(data = pvstate_df, regions = "states", values = "R_pv2p") + 
-  scale_fill_gradient(low = "white", high = "red", name = "GOP two-party voteshare") +
+map <- plot_usmap(data = pv_margins_map, regions = "states", values = "win_margin") +
+  scale_fill_gradient2(
+    high = "dodgerblue2", 
+    mid = "white",
+    low = "red2", 
+    breaks = c(-50,-25,0,25,50), 
+    limits = c(-50,50),
+    name = "win margin"
+  ) +
+  labs(title = "Impact of the Southern Strategy", caption= "Some states are gray because of N/A values. In these cases, certain frontrunners were not included on some ballots and thus data is incomplete.", fill = "Win Margin by Percent") +
+  facet_wrap(~year) +
   theme_void()
 
-## map: wins
-pv_win_map <- pvstate_df %>%
-    filter(year == 2000) %>%
-    mutate(winner = ifelse(R > D, "republican", "democrat"))
-
-plot_usmap(data = pv_win_map, regions = "states", values = "winner") +
-    scale_fill_manual(values = c("blue", "red"), name = "state PV winner") +
-    theme_void()
-
-## map: win-margins
-pv_margins_map <- pvstate_df %>%
-    filter(year == 2000) %>%
-    mutate(win_margin = (R_pv2p-D_pv2p))
-
-plot_usmap(data = pv_margins_map, regions = "states", values = "win_margin") +
-    scale_fill_gradient2(
-      high = "red", 
-      # mid = scales::muted("purple"), ##TODO: purple or white better?
-      mid = "white",
-      low = "blue", 
-      breaks = c(-50,-25,0,25,50), 
-      limits = c(-50,50),
-      name = "win margin"
-    ) +
-    theme_void()
-
-## map grid
-pv_map_grid <- pvstate_df %>%
-    filter(year >= 1980) %>%
-    mutate(winner = ifelse(R > D, "republican", "democrat"))
-
-plot_usmap(data = pv_map_grid, regions = "states", values = "winner", color = "white") +
-    facet_wrap(facets = year ~.) + ## specify a grid by year
-    scale_fill_manual(values = c("blue", "red"), name = "PV winner") +
-    theme_void() +
-    theme(strip.text = element_text(size = 12),
-          aspect.ratio=1)
-
-ggsave("PV_states_historical.png", height = 3, width = 8)
-
-
-####----------------------------------------------------------#
-#### Extra: FiveThirtyEight replication in ggplot2 ####
-#### https://projects.fivethirtyeight.com/swing-states-2020-election/
-####----------------------------------------------------------#
-
-pvstate_df$vote_margin <- pvstate_df$R_pv2p - pvstate_df$D_pv2p
-
-pvstate_df %>% 
-  ## subset data
-  filter(state %in% c("Arizona","Georgia","Texas")) %>%
-  filter(year >= 2000) %>%
-  ## pipe into ggplot()
-  ggplot(aes(x=year, y=vote_margin, color=vote_margin)) + 
-  ## specify a grid by state
-  facet_wrap(. ~ state) + 
-  ## add plot elements
-  geom_hline(yintercept=0,color="gray") +
-  geom_line(size=2) + 
-  geom_point(size=6) +
-  ## specify scale colors
-  scale_colour_gradient(low = "blue", high = "red") +
-  scale_fill_gradient(low = "blue", high = "red") +
-  ## specify titles, labels
-  xlab("") +
-  ylab("Republican vote-share margin") + 
-  ggtitle("Swing states that moved sharply to the left in 2016") +
-  ## switch position of x-axis and y-axis
-  coord_flip() +
-  ## make x-axis (year) run from top to bottom
-  scale_x_reverse(breaks=unique(pvstate_df$year)) +
-  theme_minimal() + 
-  theme(panel.border    = element_blank(),
-        plot.title      = element_text(size = 20, hjust = 0.5, face="bold"), 
-        legend.position = "none",
-        axis.title      = element_text(size=18),
-        axis.text.x     = element_text(angle = 45, hjust = 1),
-        axis.text       = element_text(size = 18),
-        strip.text      = element_text(size = 18, face = "bold"))
-
+ggsave("figures/map.png")

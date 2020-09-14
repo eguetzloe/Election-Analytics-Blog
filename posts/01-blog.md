@@ -10,7 +10,7 @@ One commonly cited example is the comparison of Wyoming and California. Accordin
 
 In light of this difference, it is interesting to consider how electors are apportioned in the first place. Each state receives a number of electors equal to its sum of Senators and Representatives. Thus, the number of a state’s electors can be a general indicator of the state’s population. This observation raises an interesting question: is there any kind of relationship between population and number of electors per state? More specifically, do the most populous states tend to prefer one party, and has this relationship changed significantly over time? I explore this potential correlation in the animation below, which illustrates what percent of a state’s vote the Democratic presidential candidate received in elections going back to 1948. 
 
-![](../figures/map.png)
+![](../figures/elector.animation.gif)
 
 As seen in the graphic, it appears that since 1948 there has been a positive relationship between number of electors and Democratic vote share by state; however, this relationship began very weakly and slowly grew more pronounced. In the earliest years depicted in the animation, the regression line is nearly flat, indicating almost no correlation between Democratic vote percent and number of electors. Later, though, the line turns more clearly upwards, implying that in recent years more populous states have begun voting more strongly Democratic than in the past. 
 
@@ -20,7 +20,7 @@ Before the 1970s, the South was generally a stronghold for Democratic candidates
 
 Observing these patterns, Republican strategists in the late 1960s realized that they desperately needed to regain support in Southern states to experience electoral success in the future. To this end, Republican strategists urged presidential candidates like Richard Nixon to take advantage of the divisive issue of race within the South by using polarizing racial rhetoric which could propel white voters out in stronger numbers to vote for Republicans. The tactic worked, and as can be seen in the map below, the South quickly turned from blue states to swing states and ultimately firmly red.
 
-![](../figures/electoranimation.gif)
+![](../figures/map.png)
 
 With these strategies and the help of hugely popular presidential candidates like Ronald Reagan, the Republican Party enjoyed control over the White House for over a decade in the 1980s. However, as the graphic shows, even during these periods of Republican power, more populous states such as California and New York voted less strongly for the Republican candidates. In 1992, the election of Bill Clinton marked a new era of Democratic strategy which began winning back key states such as California and New York. By 2000, the electoral map takes a shape remarkably similar to the map of 2016, where the high populations of the Northeast and west coast serve as a sort of "blue wall", while the South is a relatively impermeable red bloc.
 
