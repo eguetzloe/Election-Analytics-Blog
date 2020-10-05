@@ -1,5 +1,4 @@
 # Population Prejudice: Is The Electoral College Biased Against More Populous States?
-
 ## September 13, 2020
 
 In the days following November 8th, 2016, the US electorate was forced to re-examine its complex relationship with a long-criticized institution: the Electoral College. For the fourth time in US history, a presidential candidate who failed to win a plurality of the popular vote had managed to win the Electoral College and thus gain the presidency. Many Democratic voters post-election accused the Electoral College of being biased against traditionally blue states, which they claim tend to be more populous than strongly red-leaning states. This claim stems from the structure of the Electoral College, which allocates at least 3 electors to every state regardless of population.
