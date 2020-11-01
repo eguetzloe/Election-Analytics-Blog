@@ -1,4 +1,5 @@
 # Polling- Predictive or Problematic?
+## September 27, 2020
 
 After Donald Trump's unexpected win in the 2016 election, political pundits, reporters, and politicians have spent excessive amounts of time attempting to understand how 2016 pollsters got the last election's results so ["wrong."](https://www.pewresearch.org/fact-tank/2016/11/09/why-2016-election-polls-missed-their-mark/) In the run-up to the 2020 election, analysts have been more cautious in taking poll results at face value than perhaps ever before. Many pundits have attempted to find ways to differentiate 2020 polls from 2016, pointing to differences in polling trends that show an overall stronger Biden lead than Clinton had in 2016.
 
