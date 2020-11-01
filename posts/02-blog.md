@@ -1,4 +1,4 @@
-# Voting With Your Wallet: When and How Do Americans Engage in Economic Voting?
+# Voting With Your Wallet- When and How Do Americans Engage in Economic Voting?
 ## September 20, 2020
 
 Going into an election cycle, one of the most important questions posed by pundits is **how the state of the economy will impact the election**. It is generally believed that various aspects of the economy such as GDP growth, average real disposable income, and unemployment rates all have a role to play in election outcomes.
