@@ -9,3 +9,11 @@ Hello! Welcome to my election analytics blog! Here I will be posting regular des
 ## [Polling- Predictive or Problematic?](posts/03-blog.md)
 
 ## [Incumbency and Its Effects- Is It Time For A Change?](posts/04-blog.md)
+
+## [Advertising- What's In An Air War?](posts/05-blog.md)
+
+## [Ground Game- How Far Does Grassroots Really Go?](posts/06-blog.md)
+
+## [Shocks](posts/07-blog.md)
+
+## [2020 Final Prediction- Who Wins?](posts/08-blog.md)
