@@ -650,7 +650,7 @@ statesims2020data <- democratstatesimdata %>%
 
 # GRAPHING ELECTORAL COLLEGE SIMULATIONS
 
-statesims2020data %>% 
+statesimsgraph <- statesims2020data %>% 
   # Setting fill and color for candidates
   ggplot(aes(x = ec, color = fct_relevel(candidate, "Trump", "Biden"), 
              fill = fct_relevel(candidate, "Trump", "Biden"))) +
@@ -673,7 +673,7 @@ statesims2020data %>%
   theme(legend.title = element_blank())
 
 # Saving plot
-#ggsave("figures/npvpredgraph.png", height = 6, width = 12)
+#ggsave("figures/statesimsgraph.png", height = 6, width = 12)
 
 # CREATING FINAL US MAP PREDICTION WITHOUT TOSSUPS
 
