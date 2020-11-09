@@ -25,7 +25,7 @@ pastpolls <- read_csv("clean-data/pollavg_1968-2016_clean.csv")
 paststatepolls <- read_csv("clean-data/pollavg_bystate_1968-2016_clean.csv")
 statepolls2020 <- read_csv("clean-data/president_polls_state_clean.csv")
 popvotestate <- read_csv("clean-data/popvote_bystate_1948-2016_clean.csv")
-electors <- read_csv("clean-data/ec_2020_clean.csv")
+electors <- read_csv("clean-data/electors_clean.csv")
 local <- read_csv("clean-data/local.csv")
 vep <- read_csv("data/vep_1980-2016.csv")
 
@@ -69,6 +69,9 @@ model4 <- train(pv2p ~ avg_support + prev_avg_unemployment + prev_avg_gdp_growth
 model5 <- train(pv2p ~ avg_support + prev_avg_unemployment + prev_avg_gdp_growth + last_pv2p + incumbent_party*job_approval + incumbent_party*prev_avg_unemployment + incumbent_party*prev_avg_gdp_growth,
                  data = modeldata, method = "lm", trControl = trainControl(method = "LOOCV"))
 
+# Model 6 was added after the fact- I compared it after seeing it perform well
+# for my states model. It was my second best model, but ultimately I opted for
+# Model 4 because of its slightly higher R-squared value.
 model6 <- train(pv2p ~ avg_support*party + prev_avg_gdp_growth + last_pv2p + job_approval*party,
                 data = modeldata, method = "lm", trControl = trainControl(method = "LOOCV"))
 
@@ -578,8 +581,8 @@ electorbar <- ecbardata %>%
   scale_fill_manual(values = c("#528bfa", "#99bdff", "#d6e6ff", "#CCCCFF", "#ffdcd9", "#FC9A98", "#ff5757"),
                     breaks = c("Strong Biden","Likely Biden", "Lean Biden", "Toss-Up", "Lean Trump", "Likely Trump", "Strong Trump"))
 # Saving plot
-#png("electorbar1.png", units="in", width=6, height=1.5, res=100)
-#print(electorbar)
+# png("electorbar.png", units="in", width=6, height=1.5, res=100)
+# print(electorbar)
 # dev.off()
  
 # And finally, some more simulations
@@ -633,7 +636,7 @@ republicanstatesimdata <- statesims2020 %>%
 # Joined datasets
 statesims2020data <- democratstatesimdata %>% 
   inner_join(republicanstatesimdata, by = c("key", "state")) %>% 
-  inner_join(electors %>% select(-year), by = "state") %>% 
+  inner_join(electors, by = "state") %>% 
   # Mutated to create possibilities of Trump and Biden wins
   mutate(biden_win = ifelse(democrat > republican, electors, 0)) %>% 
   mutate(trump_win = ifelse(democrat < republican, electors, 0)) %>% 
@@ -645,8 +648,10 @@ statesims2020data <- democratstatesimdata %>%
   summarize(Biden = sum(biden_win),
             Trump = sum(trump_win),
             .groups = "drop") %>% 
+  mutate(trump_win = Trump > Biden) %>% 
+  mutate(total_trump = sum(trump_win)) %>%
   # Pivoted to manipulate data more easily
-  pivot_longer(Biden:Trump, names_to = "candidate", values_to = "ec") 
+  pivot_longer(Biden:Trump, names_to = "candidate", values_to = "ec")
 
 # GRAPHING ELECTORAL COLLEGE SIMULATIONS
 
@@ -673,7 +678,7 @@ statesimsgraph <- statesims2020data %>%
   theme(legend.title = element_blank())
 
 # Saving plot
-#ggsave("figures/statesimsgraph.png", height = 6, width = 12)
+# ggsave("figures/statesimsgraph.png", height = 6, width = 12)
 
 # CREATING FINAL US MAP PREDICTION WITHOUT TOSSUPS
 

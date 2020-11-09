@@ -19,7 +19,7 @@ gallup <- read_csv("data/approval_gallup_1941-2020.csv")
 polls_state <- read_csv("data/pollavg_bystate_1968-2016.csv")
 popvote_state <- read_csv("data/popvote_bystate_1948-2016.csv")
 local <- read_csv("data/local.csv")
-electors <- read_csv("data/ec_1952-2020.csv")
+electors <- read_csv("data/csvData.csv")
 
 # NATIONAL DATA CLEANING
 
@@ -192,20 +192,6 @@ popvote_state_clean <- popvote_state %>%
 # Added to clean data folder
 # write_csv(popvote_state_clean, "clean-data/popvote_bystate_1948-2016_clean.csv")  
 
-# Cleaning Electoral College data:
-electors_clean <- electors %>% 
-  # Filtered for 2020
-  filter(year == 2020,
-         # Removed total
-         state != "Total") %>% 
-  # Mutated for DC
-  mutate(electors = case_when(
-    state == "D.C." ~ 3,
-    TRUE ~ electors
-  ))
-# Added to clean data folder
-# write_csv(electors_clean, "clean-data/ec_2020_clean.csv")
-
 # Cleaning local economic data
 local_clean <- read_csv("data/local.csv") %>%
   # Cleaned column names
@@ -225,6 +211,17 @@ local_clean <- read_csv("data/local.csv") %>%
 
 # Added to clean data folder
 # write_csv(local_clean, "clean-data/local.csv")
+
+# Cleaning electors data
+electors_clean <- electors %>%
+  # Cleaned column names
+  clean_names() %>%
+  # Renamed elector column
+  rename(electors = electoral_votes_number)
+
+# Added to clean data folder
+# write_csv(electors_clean, "clean-data/electors_clean.csv")
+
 
 # Much of this data cleaning was done in collaboration with other students in
 # Gov 1347 and on the Harvard Political Review's Data Journalism team. Thanks to
