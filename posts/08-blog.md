@@ -1,7 +1,7 @@
 # Final Prediction- Who Wins?
 ## November 1, 2020
 
-Finally, it's the moment we've all been waiting for! Tuesday, November 3rd, is rapidly approaching, and with it all the work I have done this semester in testing predictive models comes to a close. This week, I explain the process I took towards developing a model for predicting the national popular vote and the Electoral College vote for the 2020 presidential election.
+Finally, it's the moment we've all been waiting for! Tuesday, November 3rd, is rapidly approaching, and with it all the work I have done this semester in testing predictive models comes to a close. This week, I developed two final models for predicting the national popular vote and the Electoral College vote for the 2020 presidential election.
 
 ## National Popular Vote Model
 
