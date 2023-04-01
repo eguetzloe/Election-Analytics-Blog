@@ -14,6 +14,4 @@ Hello! Welcome to my election analytics blog! Here I will be posting regular des
 
 ## [Ground Game- How Far Does Grassroots Really Go?](posts/06-blog.md)
 
-## [Shocks](posts/07-blog.md)
-
 ## [2020 Final Prediction- Who Wins?](posts/08-blog.md)
